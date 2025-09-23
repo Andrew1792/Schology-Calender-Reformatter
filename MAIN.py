@@ -24,7 +24,6 @@ def convert_schoology_ics(input_filename, output_filename):
             summary = component.get('summary')
             dtstart = component.get('dtstart').dt
 
-            # This script will now convert ALL events, not just 11:59 PM ones.
             # We get the correct date regardless of the original time.
             if isinstance(dtstart, datetime):
                 event_date = dtstart.date()
@@ -36,7 +35,6 @@ def convert_schoology_ics(input_filename, output_filename):
             new_event.add('summary', summary)
 
             # 4. Set the ONLY date/time properties to be all-day.
-            # This is the official, standard way to specify an all-day event.
             new_event.add('dtstart', event_date)
             new_event.add('dtend', event_date + timedelta(days=1))
             
