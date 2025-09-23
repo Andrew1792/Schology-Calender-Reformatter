@@ -28,10 +28,10 @@ This "rebuild" approach avoids issues with hidden properties, timezone conflicts
 ## How to Use
 
 1.  **Download your calendar** from Schoology.
-2.  **Rename the file** to `schoology.ics` and place it in the same folder as the `format_ics.py` script.
+2.  **Rename the file** to `calendar.ics` or change the variable 'input_file' and place it in the same folder as the `MAIN.py` script.
 3.  **Run the script** from your terminal:
     ```bash
-    python format_ics.py
+    python MAIN.py
     ```
 4.  A new file named `google_calendar_formatted.ics` will be created.
 5.  **Import this new file** into your Google Calendar. All your assignments will now appear as proper all-day events on their due dates.
