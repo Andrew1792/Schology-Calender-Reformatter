@@ -1,49 +1,58 @@
-from icalendar import Calendar
+import uuid
+from icalendar import Calendar, Event
 from datetime import datetime, timedelta
 
 def convert_schoology_ics(input_filename, output_filename):
     """
-    Reads a Schoology ICS file, converts events due at 11:59 PM to all-day events,
-    and saves the result to a new file. This version is more robust and also
-    removes the DURATION property.
+    Reads a Schoology ICS file and creates a new, clean calendar with all 
+    assignments converted to proper all-day events on their due date.
+    This is a robust method that builds events from scratch to avoid errors.
     """
     try:
         with open(input_filename, 'rb') as f:
             old_cal = Calendar.from_ical(f.read())
         
+        # 1. Create a completely new, clean calendar object
         new_cal = Calendar()
-
-        for key, value in old_cal.items():
-            new_cal.add(key, value)
+        new_cal.add('prodid', '-//Schoology All-Day Converter//')
+        new_cal.add('version', '2.0')
 
         converted_count = 0
-
+        
+        # 2. Loop through every event from the original file
         for component in old_cal.walk('VEVENT'):
+            summary = component.get('summary')
             dtstart = component.get('dtstart').dt
 
-            if isinstance(dtstart, datetime) and dtstart.hour == 23 and dtstart.minute == 59:
+            # This script will now convert ALL events, not just 11:59 PM ones.
+            # We get the correct date regardless of the original time.
+            if isinstance(dtstart, datetime):
                 event_date = dtstart.date()
-                
-                # --- THIS IS THE KEY FIX ---
-                # To create a true all-day event, we must remove all properties
-                # that define a specific time or duration.
-                if 'dtend' in component:
-                    del component['dtend']
-                if 'duration' in component:
-                    del component['duration']  # <-- The new, important line!
-                
-                # Now we set the correct all-day properties.
-                component['dtstart'].dt = event_date
-                component.add('dtend', event_date + timedelta(days=1))
-                
-                converted_count += 1
+            else: # If it's already a date object
+                event_date = dtstart
 
-            new_cal.add_component(component)
+            # 3. Create a brand new, clean event from scratch
+            new_event = Event()
+            new_event.add('summary', summary)
 
+            # 4. Set the ONLY date/time properties to be all-day.
+            # This is the official, standard way to specify an all-day event.
+            new_event.add('dtstart', event_date)
+            new_event.add('dtend', event_date + timedelta(days=1))
+            
+            # 5. Add essential properties for compatibility
+            new_event.add('dtstamp', datetime.now()) # Timestamp for when it was created
+            new_event.add('uid', f"{uuid.uuid4()}@google.com") # A unique ID for the event
+
+            # 6. Add the brand new, clean event to our new calendar
+            new_cal.add_component(new_event)
+            converted_count += 1
+            
+        # 7. Write the new calendar to the output file
         with open(output_filename, 'wb') as f:
             f.write(new_cal.to_ical())
             
-        print(f"✅ Success! Converted {converted_count} events to all-day events.")
+        print(f"✅ Success! Rebuilt {converted_count} events as clean, all-day events.")
         print(f"Your new calendar file is ready: '{output_filename}'")
 
     except FileNotFoundError:
