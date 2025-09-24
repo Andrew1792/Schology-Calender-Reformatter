@@ -14,12 +14,14 @@ def convert_schoology_ics(input_filename, output_filename):
         with open(input_filename, 'rb') as f:
             old_cal = Calendar.from_ical(f.read())
         
+        # Create a completely new, clean calendar object
         new_cal = Calendar()
         new_cal.add('prodid', '-//Schoology All-Day Converter//')
         new_cal.add('version', '2.0')
 
         converted_count = 0
         
+        # Iterate through every event from the original file
         for component in old_cal.walk('VEVENT'):
             summary = component.get('summary')
             description = component.get('description', '')
@@ -28,21 +30,25 @@ def convert_schoology_ics(input_filename, output_filename):
             utc_dt = component.get('dtstart').dt
             local_dt = utc_dt.astimezone(local_tz)
             correct_local_date = local_dt.date()
-
+            
+            # Create a brand new, clean event from scratch
             new_event = Event()
             new_event.add('summary', summary)
             new_event.add('description', description)
             
-            # Create the all-day event on the correct local date.
+            # Set the date/time properties to be all-day.
             new_event.add('dtstart', correct_local_date)
             new_event.add('dtend', correct_local_date + timedelta(days=1))
             
+            # Add essential properties for compatibility
             new_event.add('dtstamp', datetime.now())
             new_event.add('uid', f"{uuid.uuid4()}@google.com")
 
+            # Add the brand new, clean event to our new calendar
             new_cal.add_component(new_event)
             converted_count += 1
-            
+        
+        # Write the new calendar to the output file
         with open(output_filename, 'wb') as f:
             f.write(new_cal.to_ical())
             
