@@ -12,6 +12,14 @@ This script reads your original `schoology.ics` file, extracts the essential inf
 
 This "rebuild" approach avoids issues with hidden properties, timezone conflicts, or non-standard formatting that may exist in the original file.
 
+##⚠️ A Quick Heads-Up
+
+Remember, this process is a manual import, not a live sync. Your Google Calendar will only be as up-to-date as the .ics file you downloaded from Schoology.
+
+If your teacher adds new assignments or changes due dates, those updates will not appear automatically.
+
+To see the latest changes, you'll need to periodically re-export the calendar from Schoology, re-run the script, and import the new file into Google Calendar.
+
 ## Requirements
 
 * Python 3.6+
