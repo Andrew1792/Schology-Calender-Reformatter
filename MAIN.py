@@ -6,7 +6,6 @@ def convert_schoology_ics(input_filename, output_filename):
     """
     Reads a Schoology ICS file and creates a new, clean calendar with all 
     assignments converted to proper all-day events on their due date.
-    This is a robust method that builds events from scratch to avoid errors.
     """
     try:
         with open(input_filename, 'rb') as f:
