@@ -27,7 +27,7 @@ def convert_schoology_ics(input_filename, output_filename):
             # We get the correct date regardless of the original time.
             if isinstance(dtstart, datetime):
                 event_date = dtstart.date()
-            else: # If it's already a date object
+            else:
                 event_date = dtstart
 
             # 3. Create a brand new, clean event from scratch
@@ -35,7 +35,7 @@ def convert_schoology_ics(input_filename, output_filename):
             new_event.add('summary', summary)
             new_event.add('description', description)
 
-            # 4. Set the ONLY date/time properties to be all-day.
+            # 4. Set the date/time properties to be all-day.
             new_event.add('dtstart', event_date - timedelta(days=1))
             new_event.add('dtend', event_date)
             
