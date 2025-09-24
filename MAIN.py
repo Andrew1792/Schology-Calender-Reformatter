@@ -21,7 +21,8 @@ def convert_schoology_ics(input_filename, output_filename):
         
         # 2. Loop through every event from the original file
         for component in old_cal.walk('VEVENT'):
-            summary = component.get('summary')
+            summary = component.get('SUMMARY')
+            description = component.get('DESCRIPTION', '')
             dtstart = component.get('dtstart').dt
 
             # We get the correct date regardless of the original time.
@@ -33,6 +34,7 @@ def convert_schoology_ics(input_filename, output_filename):
             # 3. Create a brand new, clean event from scratch
             new_event = Event()
             new_event.add('summary', summary)
+            new_event.add('description', description)
 
             # 4. Set the ONLY date/time properties to be all-day.
             new_event.add('dtstart', event_date - timedelta(days=1))
