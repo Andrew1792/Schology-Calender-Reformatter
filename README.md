@@ -23,7 +23,6 @@ To see the latest changes, you'll need to periodically re-export the calendar fr
 ## Requirements
 
 * Python 3.6+
-* The `icalendar` library
 
 ## Installation
 
