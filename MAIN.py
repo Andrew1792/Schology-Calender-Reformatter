@@ -35,8 +35,8 @@ def convert_schoology_ics(input_filename, output_filename):
             new_event.add('summary', summary)
 
             # 4. Set the ONLY date/time properties to be all-day.
-            new_event.add('dtstart', event_date)
-            new_event.add('dtend', event_date + timedelta(days=1))
+            new_event.add('dtstart', event_date - timedelta(days=1))
+            new_event.add('dtend', event_date)
             
             # 5. Add essential properties for compatibility
             new_event.add('dtstamp', datetime.now()) # Timestamp for when it was created
