@@ -1,6 +1,7 @@
 import uuid
 from icalendar import Calendar, Event
 from datetime import datetime, timedelta
+from tzlocal import get_localzone
 
 def convert_schoology_ics(input_filename, output_filename):
     """
@@ -8,7 +9,8 @@ def convert_schoology_ics(input_filename, output_filename):
     assignments converted to proper all-day events on the correct local due date.
     """
     try:
-        local_tz = datetime.now().astimezone().tzinfo
+        # Get the computer's local timezone, correctly handling Daylight Saving Time.
+        local_tz = get_localzone()
         print(f"Detected local timezone: {local_tz}")
 
         with open(input_filename, 'rb') as f:
